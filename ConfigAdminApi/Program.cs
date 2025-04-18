@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ConfigDbContext>(
     options => options.UseSqlServer(
-        builder.Configuration.GetConnectionString("ConfigDb")));
+        builder.Configuration.GetConnectionString("ConfigDb"))); // iþte bunu dinamik olarak deðiþtireceksin. metotla bir connstr gelecek
 
 
 builder.Services.AddScoped<IConfigRepository, ConfigRepository>();
