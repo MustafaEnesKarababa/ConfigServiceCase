@@ -87,6 +87,7 @@ namespace ConfigLibrary.Extension
                     {
                         return config.Value;
                     }
+
                     //if (config.Type.ToLower() == "bool")
                     //{
                     //    return bool.TryParse(config.Value, out var b) ? b : null;
