@@ -20,7 +20,9 @@ namespace ConfigLibrary.DAL.Repositories
 
         public async Task<List<Storage>> GetAllAsync()
         {
-           return  await _context.Configs.ToListAsync();
+           return  await _context.Configs.AsNoTracking().ToListAsync();
+
+            //AsNoTracking => EFcore entity i mark'lıyor. Eğer AsNoTrack ile bunu durdurmazsan değişiklik olmadığı için DB'ye gidip sorgu atmıyor. 
         }
         public async Task<Storage?> GetByIdAsync(Guid id)
         {

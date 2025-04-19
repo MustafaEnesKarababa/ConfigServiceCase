@@ -46,15 +46,24 @@ namespace ConfigLibrary.Extension
         /// </summary>
         private async Task LoadConfigs()
         {
-            var configs = await _configService.GetAllAsync();
-            var filteredConfigs = configs
-                                    .Where(x => x.ApplicationName == _appName
-                                             && x.IsActive == true)
-                                    .ToList();
-
-            foreach (var config in filteredConfigs)
+            try
             {
-                _cache[config.Name] = config;
+                var configs = await _configService.GetAllAsync();
+                var filteredConfigs = configs
+                                        .Where(x => x.ApplicationName == _appName
+                                                 && x.IsActive == true)
+                                        .ToList();
+
+                foreach (var config in filteredConfigs)
+                {
+                    _cache[config.Name] = config;
+                }
+
+             
+            }
+            catch 
+            {
+                
             }
 
         }
@@ -66,8 +75,10 @@ namespace ConfigLibrary.Extension
             _refreshTimer = new Timer(
                 async x => await LoadConfigs(),
                 null,
-                _intervalMS,
+                0,
                 _intervalMS);
+
+    
         }
 
         /// <summary>
@@ -80,52 +91,67 @@ namespace ConfigLibrary.Extension
         {
             try
             {
-                if (_cache.TryGetValue(key, out var config) && config.Value != null) 
+                if (_cache.TryGetValue(key, out var config) && config.Value != null)
                 {
-                  
-                    if(config.Type.ToLower() == "string")
+                    string type = config.Type.ToLower();
+
+                    if (type == "string")
                     {
                         return config.Value;
                     }
 
-                    //if (config.Type.ToLower() == "bool")
-                    //{
-                    //    return bool.TryParse(config.Value, out var b) ? b : null;
-                    //}
-                    if(config.Type == "bool" || config.Type == "boolean")
+                    if (type == "bool" || type == "boolean")
                     {
-                        if(config.Value == "1" || config.Value == "true")
+                        if (config.Value == "1" || config.Value.ToLower() == "true")
                         {
                             return true;
                         }
-                        else if(config.Value == "0" || config.Value == "false")
+                        else if (config.Value == "0" || config.Value.ToLower() == "false")
                         {
                             return false;
                         }
-                    }
-                    if (config.Type.ToLower() == "int")
-                    {
-                        return int.TryParse(config.Value,out var i) ? i : null; 
-                    }
-                    if (config.Type.ToLower() == "double")
-                    {
-                        return double.TryParse(config.Value,out var d) ? d : null;
-                    }
-                    if (config.Type.ToLower() == "float")
-                    {
-                        return float.TryParse(config.Value, out var f) ? f : null;
+                        else
+                        {
+                            throw new FormatException($"{key}' için value çevrilemedi.");
+                        }
                     }
 
+                    if (type == "int")
+                    {
+                        if (int.TryParse(config.Value, out var i))
+                            return i;
+                        else
+                            throw new FormatException($"{key}' için value int parse edilemedi. Value: '{config.Value}'");
+                    }
+
+                    if (type == "double")
+                    {
+                        if (double.TryParse(config.Value, out var d))
+                            return d;
+                        else
+                            throw new FormatException($"'{key}' için value double parse edilemedi. Value: '{config.Value}'");
+                    }
+
+                    if (type == "float")
+                    {
+                        if (float.TryParse(config.Value, out var f))
+                            return f;
+                        else
+                            throw new FormatException($" '{key}' için value float parse edilemedi. Value: '{config.Value}'");
+                    }
+
+    
+                    throw new NotSupportedException($"{key}' için value desteklenmeyen config tipinde.");
                 }
-                //todo :buralara exeption yaz
-                return null;
+
+                throw new KeyNotFoundException($"Cache içinde '{key}' anahtarı bulunamadı veya değeri null.");
             }
             catch
             {
-                //todo : exp yaz
                 return null;
             }
         }
+
 
 
 
