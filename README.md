@@ -19,7 +19,7 @@ Kurulum:
     - Moq
     - xunit
     
-  - Veritabanı bağlantısını yapın ve yapılandırma ayarlarını güncelleyin. Api'yı kullanmak için appsettings.json içerisindeki connectionString'i kendinize uygun haliyle düzenleyin. configurationReader'ı kullanacaksanız bu düzenlemeyi yapmanıza gerek yok. Sadece Api'yı çalıştırmak için ihtiyacınız var. configurationReader'ı kullanırken vereceğiniz connstr bundan bağımsızdır.
+  - Veritabanı bağlantısı için update-database yapın. Api'yı kullanmak için appsettings.json içerisindeki connectionString'i kendinize uygun haliyle düzenleyin. configurationReader'ı kullanacaksanız bu düzenlemeyi yapmanıza gerek yok. Sadece Api'yı çalıştırmak için ihtiyacınız var. configurationReader'ı kullanırken vereceğiniz connstr bundan bağımsızdır.
 
 Kullanım:
 ConfigAdminApi API'sini kullanarak konfigürasyonları ekleyebilir, güncelleyebilir ve silebilirsiniz.
